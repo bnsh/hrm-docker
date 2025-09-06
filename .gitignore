@@ -1,0 +1,7 @@
+certs/
+.*.mypy
+__pycache__
+.*.pylint3
+.*.pyright
+RCS/
+secrets
