@@ -21,7 +21,8 @@ run: build download-sudoku-data
 			-v ${HRM_WANDB_DATA}:/home/hrm/src/hrm/wandb \
 			-v ${HRM_WANDB_CONFIG}:/home/hrm/.config/wandb \
 			-v ${HRM_WANDB_CACHE}:/home/hrm/.cache/wandb \
-			-w /home/hrm/src/hrm hrm/docker \
+			-w /home/hrm/src/hrm \
+			hrm/docker \
 			/bin/bash
 
 download-sudoku-data: build ${HRM_SUDOKU_DATA}/sudoku-extreme-full/identifiers.json ${HRM_SUDOKU_DATA}/sudoku-extreme-1k-aug-1000/identifiers.json
