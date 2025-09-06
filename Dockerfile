@@ -19,7 +19,10 @@ RUN apt-get update -y && apt-get -y install cuda-toolkit-12-9
 USER ${USER}
 RUN python3 -m venv "${HRM}/.venv"
 RUN python3 -m pip install -U pip
-RUN git clone https://github.com/sapientinc/HRM.git "${HRM}/src/hrm"
+
+# The commit hash 05dd4ef795a98c20110e380a330d0b3ec159a46b is just the one I happened to use, and I'm adding it here, for the sake of replicability.
+# In principle, you shouldn't have to slavishly follow this commit hash.
+RUN git clone https://github.com/sapientinc/HRM.git "${HRM}/src/hrm" && ( cd "${HRM}/src/hrm" && git checkout 05dd4ef795a98c20110e380a330d0b3ec159a46b )
 RUN ${HRM}/.venv/bin/python3 -m pip install -U -r "${HRM}/src/hrm/requirements.txt"
 COPY extra-requirements.txt /tmp/extra-requirements.txt
 RUN ${HRM}/.venv/bin/python3 -m pip install -U -r /tmp/extra-requirements.txt
@@ -27,4 +30,5 @@ RUN ${HRM}/.venv/bin/python3 -m pip install flash-attn --no-build-isolation
 RUN perl -p -i -e 's/^from adam_atan2 import AdamATan2$/from adam_atan2_pytorch import AdamAtan2 as AdamATan2/g' ${HRM}/src/hrm/pretrain.py
 RUN perl -p -i -e 's/lr=0/lr=1e-3/g' ${HRM}/src/hrm/pretrain.py
 RUN mkdir -p ${HRM}/.config/wandb ${HRM}/.cache/wandb
+RUN echo 'source ${HRM}/.venv/bin/activate' >> ${HRM}/.bashrc
 WORKDIR "${HRM}"

@@ -24,9 +24,6 @@ run: build download-sudoku-data
 			-w /home/hrm/src/hrm hrm/docker \
 			/bin/bash
 
-push:
-	rsync -avz -e ssh --progress --delete $(HOME)/src/HRM-docker/ nca:src/HRM-docker/
-
 download-sudoku-data: build ${HRM_SUDOKU_DATA}/sudoku-extreme-full/identifiers.json ${HRM_SUDOKU_DATA}/sudoku-extreme-1k-aug-1000/identifiers.json
 
 ${HRM_SUDOKU_DATA}/sudoku-extreme-full/identifiers.json:
