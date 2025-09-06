@@ -27,8 +27,35 @@ RUN ${HRM}/.venv/bin/python3 -m pip install -U -r "${HRM}/src/hrm/requirements.t
 COPY extra-requirements.txt /tmp/extra-requirements.txt
 RUN ${HRM}/.venv/bin/python3 -m pip install -U -r /tmp/extra-requirements.txt
 RUN ${HRM}/.venv/bin/python3 -m pip install flash-attn --no-build-isolation
+
+# This replacement (from adam_atan2...), is because if we don't do this, the `from adam_atan2 import AdamATan2` fails.
+#     Traceback (most recent call last):
+#      File "/home/hrm/src/hrm/pretrain.py", line 19, in <module>
+#        from adam_atan2 import AdamATan2
+#      File "/home/hrm/.venv/lib/python3.12/site-packages/adam_atan2/__init__.py", line 1, in <module>
+#        from .adam_atan2 import AdamATan2
+#      File "/home/hrm/.venv/lib/python3.12/site-packages/adam_atan2/adam_atan2.py", line 4, in <module>
+#        import adam_atan2_backend
+#    ModuleNotFoundError: No module named 'adam_atan2_backend'
 RUN perl -p -i -e 's/^from adam_atan2 import AdamATan2$/from adam_atan2_pytorch import AdamAtan2 as AdamATan2/g' ${HRM}/src/hrm/pretrain.py
+
+# This replacement (lr=...) is because if we don't do this, AdamAtan2 complains about lr being 0. (lr=0 is of course, ridiculous)
+#     Error executing job with overrides: ['data_path=data/sudoku-extreme-1k-aug-1000', 'epochs=20000', 'eval_interval=2000', 'global_batch_size=384', 'lr=7e-5', 'puzzle_emb_lr=7e-5', 'weight_decay=1.0', 'puzzle_emb_weight_decay=1.0']
+#     Traceback (most recent call last):
+#       File "/home/hrm/src/hrm/pretrain.py", line 411, in launch
+#         train_state = init_train_state(config, train_metadata, world_size=WORLD_SIZE)
+#                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#       File "/home/hrm/src/hrm/pretrain.py", line 177, in init_train_state
+#         model, optimizers, optimizer_lrs = create_model(config, train_metadata, world_size=world_size)
+#                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#       File "/home/hrm/src/hrm/pretrain.py", line 146, in create_model
+#         AdamATan2(
+#       File "/home/hrm/.venv/lib/python3.12/site-packages/adam_atan2_pytorch/adam_atan2.py", line 28, in __init__
+#         assert lr > 0.
+#                ^^^^^^^
+#     AssertionError
 RUN perl -p -i -e 's/lr=0/lr=1e-3/g' ${HRM}/src/hrm/pretrain.py
+
 RUN mkdir -p ${HRM}/.config/wandb ${HRM}/.cache/wandb
 RUN echo 'source ${HRM}/.venv/bin/activate' >> ${HRM}/.bashrc
 WORKDIR "${HRM}"
