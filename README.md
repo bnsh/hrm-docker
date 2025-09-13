@@ -38,6 +38,22 @@ Look inside the `Dockerfile` for:
 perl -p -i -e 's/^from adam_atan2 import AdamATan2$/from adam_atan2_pytorch import AdamAtan2 as AdamATan2/g' pretrain.py
 ```
 
+## 📦 Where Are the Weights?
+
+This repo only sets up the **environment** (CUDA, flash-attn, HRM code).
+The actual trained checkpoint weights are published separately on Hugging Face:
+
+➡️ [sapientinc/HRM-checkpoint-sudoku-extreme](https://huggingface.co/sapientinc/HRM-checkpoint-sudoku-extreme)
+  - **Trained on most "extreme" 1k examples** (Sapient):
+  - Accuracy @ 16 steps ≈ **83.7%**
+  - Exact Accuracy @ 16 steps ≈ **55.1%**
+
+➡️ [bnsh/HRM-checkpoint-sudoku-full](https://huggingface.co/bnsh/HRM-checkpoint-sudoku-full)
+  - **Trained on full dataset**:
+  - Accuracy @ 16 steps ≈ **99.5%**
+  - Exact Accuracy @ 16 steps ≈ **98.7%**
+
+
 ## 🧠 Why This Exists
 
 HRM has a lot of moving parts and GPU requirements. This Dockerfile exists so that others (or future me) can:
@@ -48,6 +64,6 @@ HRM has a lot of moving parts and GPU requirements. This Dockerfile exists so th
 
 ## 💡 TL;DR
 
-Don't try to use this container directly.  
+Don't try to use this container directly.
 Just **read the Dockerfile**, steal what you need, and apply it to your own system or project.
 
