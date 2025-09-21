@@ -1,7 +1,7 @@
 FROM python:3.12
 
 ENV USER=hrm \
-	PATH="/home/hrm/src/alt-text-generator/.venv/bin:/home/hrm/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+	PATH="/home/hrm/.venv/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
 	HRM=/home/hrm \
 	GECOS="Hierarchical Reasoning Model" \
 	CUDA_HOME=/usr/local/cuda-12.9
